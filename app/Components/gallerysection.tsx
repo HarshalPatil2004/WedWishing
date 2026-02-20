@@ -76,7 +76,7 @@ export default function WeddingGallery() {
 
       <button
         onClick={() => setMusicOn(!musicOn)}
-        className="fixed top-4 right-6 z-50 bg-yellow-600 text-white p-3 rounded-full shadow-lg hover:scale-110 transition"
+        className="fixed top-4 right-4 md:right-6 z-50 bg-yellow-600 text-white p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition"
       >
         {musicOn ? <Music2 size={20} /> : <Music size={20} />}
       </button>

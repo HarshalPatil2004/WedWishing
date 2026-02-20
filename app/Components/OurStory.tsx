@@ -84,10 +84,10 @@ export default function OurStory() {
       </div>
 
       <div className="relative max-w-5xl mx-auto z-10">
-        {/* Vertical Timeline Line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-yellow-400 to-yellow-200 h-full rounded-full shadow-lg"></div>
+        {/* Vertical Timeline Line - Hidden on mobile */}
+        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-yellow-400 to-yellow-200 h-full rounded-full shadow-lg"></div>
 
-        <div className="space-y-24">
+        <div className="space-y-12 md:space-y-24">
           {timeline.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -97,7 +97,7 @@ export default function OurStory() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
-                className={`relative flex flex-col md:flex-row items-center gap-10 ${
+                className={`relative flex flex-col md:flex-row items-center gap-6 md:gap-10 ${
                   index % 2 === 0 ? "md:flex-row-reverse" : ""
                 }`}
               >
@@ -126,8 +126,8 @@ export default function OurStory() {
                   </div>
                 </div>
 
-                {/* Timeline Dot */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-xl"></div>
+                {/* Timeline Dot - Hidden on mobile */}
+                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-xl"></div>
               </motion.div>
             );
           })}

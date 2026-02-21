@@ -61,7 +61,7 @@ export default function WeddingNavbar() {
         {/* Right Section */}
         <div className="flex items-center gap-4">
 
-          {/* Music Button (UNCHANGED) */}
+          {/* ✅ KEEP ONLY THIS MUSIC BUTTON (Rightmost one preserved) */}
           <button
             onClick={toggleMusic}
             className="text-pink-600 hover:text-pink-800 transition text-xl"
@@ -80,7 +80,7 @@ export default function WeddingNavbar() {
           </div>
 
           {/* ✅ ADDED: Mobile Hamburger Button */}
-          {/* Appears only below md and positioned right of music button */}
+          {/* Appears only on small screens and positioned RIGHT of music button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -93,7 +93,7 @@ export default function WeddingNavbar() {
         </div>
       </div>
 
-      {/* ✅ UPDATED: Mobile Dropdown with Smooth Animation */}
+      {/* ✅ ADDED: Mobile Dropdown Menu (Responsive Only) */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"

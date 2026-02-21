@@ -44,12 +44,12 @@ export default function WeddingNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full backdrop-blur-md shadow-md z-50">
+    <nav className="relative top-0 left-0 w-full backdrop-blur-md shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center gap-2 text-2xl font-bold text-pink-600">
           <HeartIcon />
-        <span>WedWishher</span>
+          <span>WedWishher</span>
         </div>
 
         {/* Navigation Links */}
@@ -108,6 +108,52 @@ export default function WeddingNavbar() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="px-6 py-4 space-y-4">
+
+            <Link
+              href="#home"
+              className="block py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+
+            <Link
+              href="#story"
+              className="block py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Our Story
+            </Link>
+
+            <Link
+              href="#gallery"
+              className="block py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Gallery
+            </Link>
+
+            <Link
+              href="#events"
+              className="block py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Events
+            </Link>
+
+            <Link
+              href="#wishes"
+              className="block py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Wishes
+            </Link>
+
+          </div>
+        </div>
+      )}   {isMenuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
           <div className="px-6 py-4 space-y-4">
             <Link

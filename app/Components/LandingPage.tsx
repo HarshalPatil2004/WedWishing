@@ -28,9 +28,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // Update countdown every second
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         const next = calculateTimeLeft();
+
+        // Only update if value changes (prevents infinite re-render)
         if (
           prev.days !== next.days ||
           prev.hours !== next.hours ||
@@ -50,8 +53,9 @@ export default function Home() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center text-center bg-white px-6 pt-28 md:pt-32"
+      className="relative min-h-screen flex flex-col items-center justify-center text-center bg-white px-6"
     >
+      {/* Couple Names */}
       <h1 className="text-5xl md:text-7xl font-bold text-pink-700 mb-4">
         Sanchita ❤️ Tejas
       </h1>
@@ -60,10 +64,12 @@ export default function Home() {
         Are Getting Married
       </p>
 
+      {/* Wedding Date */}
       <p className="text-lg md:text-xl text-gray-600 mb-8">
         3 April 2026 | 12:30 PM | Nagpur, Maharashtra
       </p>
 
+      {/* Countdown Timer */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
         <TimeBox label="Days" value={timeLeft.days} />
         <TimeBox label="Hours" value={timeLeft.hours} />
@@ -71,9 +77,13 @@ export default function Home() {
         <TimeBox label="Seconds" value={timeLeft.seconds} />
       </div>
 
+      {/* Tagline */}
       <p className="text-lg md:text-xl italic text-gray-700 max-w-2xl">
         &ldquo;Two hearts, one soul, and a lifetime of love.&rdquo;
       </p>
+
+      {/* Scroll Down Indicator */}
+     
     </section>
   );
 }

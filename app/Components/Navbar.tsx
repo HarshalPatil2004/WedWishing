@@ -20,22 +20,20 @@ function HeartIcon() {
   );
 }
 
-function SimpleCircleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-      <circle cx="12" cy="12" r="6" />
-    </svg>
-  );
-}
-
 export default function WeddingNavbar() {
   const [wishWallOpen, setWishWallOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const toggleMusic = () => {
+    setIsPlaying(!isPlaying);
+    // You can connect this to audio logic later
+  };
 
   return (
-    <nav className="fixed top-0 left-0 w-full h-20 backdrop-blur-md shadow-md z-50 bg-white/80">
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-        
+    <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-md z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
         {/* Logo */}
         <div className="flex items-center gap-2 text-2xl font-bold text-pink-600">
           <HeartIcon />
@@ -44,106 +42,100 @@ export default function WeddingNavbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <Link href="#home" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Home
+          <Link href="#home" className="hover:text-pink-600 transition">
+            Home
           </Link>
-
-          <Link href="#story" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Our Story
+          <Link href="#story" className="hover:text-pink-600 transition">
+            Our Story
           </Link>
-
-          <Link href="#gallery" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Gallery
+          <Link href="#gallery" className="hover:text-pink-600 transition">
+            Gallery
           </Link>
-
-          <Link href="#events" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Events
+          <Link href="#events" className="hover:text-pink-600 transition">
+            Events
           </Link>
-
-          <Link href="#wishes" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Wishes
+          <Link href="#wishes" className="hover:text-pink-600 transition">
+            Wishes
           </Link>
         </div>
 
-        {/* Desktop Wish Wall Button */}
-        <div className="hidden md:block">
-          <button
-            type="button"
-            onClick={() => setWishWallOpen(true)}
-            className="bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer"
-          >
-            Wish Wall
-          </button>
-        </div>
+        {/* Right Section */}
+        <div className="flex items-center gap-4">
 
-        {/* Mobile Right Section */}
-        <div className="md:hidden flex items-center gap-4">
-          
-          {/* Music Button Placeholder */}
-          <button className="text-gray-700 hover:text-pink-600 transition text-xl">
-            🎵
+          {/* Music Button */}
+          <button
+            onClick={toggleMusic}
+            className="text-pink-600 hover:text-pink-800 transition text-xl"
+          >
+            {isPlaying ? "🔊" : "🎵"}
           </button>
 
-          {/* Hamburger Menu */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-gray-700 hover:text-pink-600 focus:outline-none"
-          >
-            <span className="sr-only">Open menu</span>
-            {isMenuOpen ? (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
+          {/* Desktop Wish Button */}
+          <div className="hidden md:block">
+            <button
+              onClick={() => setWishWallOpen(true)}
+              className="bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md"
+            >
+              Wish Wall
+            </button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-gray-700 hover:text-pink-600 focus:outline-none text-2xl"
+            >
+              {isMenuOpen ? "✕" : "☰"}
+            </button>
+          </div>
+
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
-          <div className="px-6 py-4 space-y-4">
-            
-            <Link href="#home" onClick={() => setIsMenuOpen(false)} className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 py-2">
-              <Icon><SimpleCircleIcon /></Icon> Home
+        <div className="md:hidden bg-white border-t shadow-lg">
+          <div className="px-6 py-4 space-y-4 text-gray-700 font-medium">
+
+            <Link href="#home" onClick={() => setIsMenuOpen(false)}>
+              Home
             </Link>
 
-            <Link href="#story" onClick={() => setIsMenuOpen(false)} className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 py-2">
-              <Icon><SimpleCircleIcon /></Icon> Our Story
+            <Link href="#story" onClick={() => setIsMenuOpen(false)}>
+              Our Story
             </Link>
 
-            <Link href="#gallery" onClick={() => setIsMenuOpen(false)} className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 py-2">
-              <Icon><SimpleCircleIcon /></Icon> Gallery
+            <Link href="#gallery" onClick={() => setIsMenuOpen(false)}>
+              Gallery
             </Link>
 
-            <Link href="#events" onClick={() => setIsMenuOpen(false)} className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 py-2">
-              <Icon><SimpleCircleIcon /></Icon> Events
+            <Link href="#events" onClick={() => setIsMenuOpen(false)}>
+              Events
             </Link>
 
-            <Link href="#wishes" onClick={() => setIsMenuOpen(false)} className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 py-2">
-              <Icon><SimpleCircleIcon /></Icon> Wishes
+            <Link href="#wishes" onClick={() => setIsMenuOpen(false)}>
+              Wishes
             </Link>
 
-            <div className="pt-4 border-t border-gray-200">
-              <button
-                onClick={() => {
-                  setWishWallOpen(true);
-                  setIsMenuOpen(false);
-                }}
-                className="w-full bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md"
-              >
-                Wish Wall
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                setWishWallOpen(true);
+                setIsMenuOpen(false);
+              }}
+              className="w-full bg-pink-600 text-white px-5 py-2 rounded-full mt-4"
+            >
+              Wish Wall
+            </button>
+
           </div>
         </div>
       )}
 
-      <WishWallModal isOpen={wishWallOpen} onClose={() => setWishWallOpen(false)} />
+      <WishWallModal
+        isOpen={wishWallOpen}
+        onClose={() => setWishWallOpen(false)}
+      />
     </nav>
   );
 }

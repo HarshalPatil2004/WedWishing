@@ -62,12 +62,12 @@ export default function WeddingNavbar() {
         <div className="flex items-center gap-4">
 
           {/* ✅ KEEP ONLY THIS MUSIC BUTTON (Rightmost one preserved) */}
-          <button
+          {/* <button
             onClick={toggleMusic}
             className="text-pink-600 hover:text-pink-800 transition text-xl"
           >
             {isPlaying ? "🔊" : "🎵"}
-          </button>
+          </button> */}
 
           {/* Desktop Wish Button (UNCHANGED) */}
           <div className="hidden md:block">

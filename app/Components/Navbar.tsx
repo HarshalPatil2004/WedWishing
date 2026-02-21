@@ -2,89 +2,171 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import WishWallModal from "./WishWallModal";
 
-export default function Navbar() {
-  // ✅ Existing state (unchanged)
-  const [isPlaying, setIsPlaying] = useState(false);
+/*
+  Fixed Version:
+  - Removed lucide-react dependency (was causing runtime null error)
+  - Added lightweight inline SVG icons instead
+  - Safe for Next.js + Vite + CRA environments
+*/
 
-  // ✅ ADDED: Mobile menu toggle state
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+function Icon({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center justify-center w-5 h-5">
+      {children}
+    </span>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-6 h-6"
+    >
+      <path d="M12 21s-6.716-4.35-9.193-7.272C.533 11.2 1.2 7.8 3.6 6.2c2.1-1.4 4.8-.6 6.4 1.2 1.6-1.8 4.3-2.6 6.4-1.2 2.4 1.6 3.067 5 0 7.528C18.716 16.65 12 21 12 21z" />
+    </svg>
+  );
+}
+
+function SimpleCircleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+      <circle cx="12" cy="12" r="6" />
+    </svg>
+  );
+}
+
+export default function WeddingNavbar() {
+  const [wishWallOpen, setWishWallOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+    <nav className="fixed top-0 left-0 w-full backdrop-blur-md shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        
-        {/* Logo (unchanged) */}
-        <div className="text-xl md:text-2xl font-semibold text-gray-800">
-          WedSite
+        {/* Logo Section */}
+        <div className="flex items-center gap-2 text-2xl font-bold text-pink-600">
+          <HeartIcon />
+        <span>WedWishher</span>
         </div>
 
-        {/* Desktop Nav Links (UNCHANGED — only hidden on mobile) */}
-        <div className="hidden md:flex items-center gap-10 text-gray-700 font-medium">
-          <Link href="#home" className="hover:text-pink-600 transition duration-300">
-            Home
+        {/* Navigation Links */}
+        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
+          <Link href="#home" className="flex items-center gap-2 hover:text-pink-600 transition">
+            <Icon><SimpleCircleIcon /></Icon> Home
           </Link>
-          <Link href="#stories" className="hover:text-pink-600 transition duration-300">
-            Our Stories
+
+          <Link href="#story" className="flex items-center gap-2 hover:text-pink-600 transition">
+            <Icon><SimpleCircleIcon /></Icon> Our Story
           </Link>
-          <Link href="#gallery" className="hover:text-pink-600 transition duration-300">
-            Gallery
+
+          <Link href="#gallery" className="flex items-center gap-2 hover:text-pink-600 transition">
+            <Icon><SimpleCircleIcon /></Icon> Gallery
+          </Link>
+
+          <Link href="#events" className="flex items-center gap-2 hover:text-pink-600 transition">
+            <Icon><SimpleCircleIcon /></Icon> Events
+          </Link>
+
+          <Link href="#wishes" className="flex items-center gap-2 hover:text-pink-600 transition">
+            <Icon><SimpleCircleIcon /></Icon> Wishes
           </Link>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-4">
-          
-          
-          {/* ========================= */}
-          {/* ✅ ADDED: Mobile Hamburger */}
-          {/* ========================= */}
+        {/* CTA Button - opens Wish Wall modal */}
+        <div className="hidden md:block">
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-2xl focus:outline-none"
+            type="button"
+            onClick={() => setWishWallOpen(true)}
+            className="bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer"
           >
-            {isMobileMenuOpen ? "✕" : "☰"}
+            Wish wall
+          </button>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-700 hover:text-pink-600 focus:outline-none"
+          >
+            <span className="sr-only">Open menu</span>
+            {isMenuOpen ? (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
           </button>
         </div>
       </div>
 
- {/* ========================= */}
-{/* ✅ FIXED: Mobile Dropdown */}
-{/* ========================= */}
-{/* Mobile Dropdown - Works below md (768px) */}
-<div
-  className={`md:hidden absolute top-full left-0 w-full bg-white shadow-md transition-all duration-300 ease-in-out ${
-    isMobileMenuOpen
-      ? "opacity-100 translate-y-0"
-      : "opacity-0 -translate-y-2 pointer-events-none"
-  }`}
->
-  <div className="px-6 py-6 space-y-5 text-gray-700 font-medium">
-    <Link
-      href="#home"
-      onClick={() => setIsMobileMenuOpen(false)}
-      className="block text-lg hover:text-pink-600 transition"
-    >
-      Home
-    </Link>
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+          <div className="px-6 py-4 space-y-4">
+            <Link
+              href="#home"
+              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Icon><SimpleCircleIcon /></Icon> Home
+            </Link>
 
-    <Link
-      href="#stories"
-      onClick={() => setIsMobileMenuOpen(false)}
-      className="block text-lg hover:text-pink-600 transition"
-    >
-      Our Stories
-    </Link>
+            <Link
+              href="#story"
+              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Icon><SimpleCircleIcon /></Icon> Our Story
+            </Link>
 
-    <Link
-      href="#gallery"
-      onClick={() => setIsMobileMenuOpen(false)}
-      className="block text-lg hover:text-pink-600 transition"
-    >
-      Gallery
-    </Link>
-  </div>
-</div>
+            <Link
+              href="#gallery"
+              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Icon><SimpleCircleIcon /></Icon> Gallery
+            </Link>
+
+            <Link
+              href="#events"
+              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Icon><SimpleCircleIcon /></Icon> Events
+            </Link>
+
+            <Link
+              href="#wishes"
+              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Icon><SimpleCircleIcon /></Icon> Wishes
+            </Link>
+
+            <div className="pt-4 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setWishWallOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer"
+              >
+                Wish wall
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <WishWallModal isOpen={wishWallOpen} onClose={() => setWishWallOpen(false)} />
     </nav>
   );
 }

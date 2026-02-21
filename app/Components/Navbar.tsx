@@ -35,14 +35,7 @@ export default function Navbar() {
         {/* Right Section */}
         <div className="flex items-center gap-4">
           
-          {/* Music Button (COMPLETELY UNCHANGED) */}
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="text-xl transition hover:scale-110"
-          >
-            {isPlaying ? "🔊" : "🎵"}
-          </button>
-
+          
           {/* ========================= */}
           {/* ✅ ADDED: Mobile Hamburger */}
           {/* ========================= */}
@@ -58,19 +51,19 @@ export default function Navbar() {
  {/* ========================= */}
 {/* ✅ FIXED: Mobile Dropdown */}
 {/* ========================= */}
+{/* Mobile Dropdown - Works below md (768px) */}
 <div
-  className={`md:hidden transform transition-all duration-300 ease-in-out origin-top ${
+  className={`md:hidden absolute top-full left-0 w-full bg-white shadow-md transition-all duration-300 ease-in-out ${
     isMobileMenuOpen
-      ? "scale-y-100 opacity-100"
-      : "scale-y-0 opacity-0"
+      ? "opacity-100 translate-y-0"
+      : "opacity-0 -translate-y-2 pointer-events-none"
   }`}
 >
-  <div className="px-6 pb-6 pt-2 space-y-4 bg-white shadow-md text-gray-700 font-medium">
-    
+  <div className="px-6 py-6 space-y-5 text-gray-700 font-medium">
     <Link
       href="#home"
       onClick={() => setIsMobileMenuOpen(false)}
-      className="block hover:text-pink-600 transition"
+      className="block text-lg hover:text-pink-600 transition"
     >
       Home
     </Link>
@@ -78,7 +71,7 @@ export default function Navbar() {
     <Link
       href="#stories"
       onClick={() => setIsMobileMenuOpen(false)}
-      className="block hover:text-pink-600 transition"
+      className="block text-lg hover:text-pink-600 transition"
     >
       Our Stories
     </Link>
@@ -86,11 +79,10 @@ export default function Navbar() {
     <Link
       href="#gallery"
       onClick={() => setIsMobileMenuOpen(false)}
-      className="block hover:text-pink-600 transition"
+      className="block text-lg hover:text-pink-600 transition"
     >
       Gallery
     </Link>
-
   </div>
 </div>
     </nav>

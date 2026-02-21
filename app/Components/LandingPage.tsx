@@ -82,10 +82,6 @@ export default function Home() {
         &ldquo;Two hearts, one soul, and a lifetime of love.&rdquo;
       </p>
 
-      {/* Scroll Down Indicator */}
-      <div className="mt-16 animate-bounce text-pink-600 text-sm">
-        ↓ Scroll to know our story ↓
-      </div>
     </section>
   );
 }

@@ -125,7 +125,7 @@ export default function Events() {
               {/* Cultural Quote */}
               <div className="border-t border-yellow-500/20 pt-4">
                 <p className="italic text-yellow-400">
-                  "{event.quoteMarathi}"
+                  {'"'}{event.quoteMarathi}{'"'}
                 </p>
                 <p className="italic text-gray-400 text-sm mt-1">
                   {event.quoteEnglish}
@@ -146,7 +146,7 @@ export default function Events() {
         className="text-center mt-24"
       >
         <p className="text-yellow-400 italic text-lg">
-          "कुटुंबाच्या आशीर्वादाने नवजीवनाची सुंदर सुरुवात."
+          &quot;कुटुंबाच्या आशीर्वादाने नवजीवनाची सुंदर सुरुवात.&quot;
         </p>
         <p className="text-gray-400 mt-2">
           With the blessings of our beloved families, we begin this sacred journey.

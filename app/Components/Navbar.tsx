@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { Music, Music2 } from "lucide-react";
 import WishWallModal from "./WishWallModal";
 
 /*
@@ -9,6 +10,8 @@ import WishWallModal from "./WishWallModal";
   - Removed lucide-react dependency (was causing runtime null error)
   - Added lightweight inline SVG icons instead
   - Safe for Next.js + Vite + CRA environments
+  - CHANGES: Added responsive mobile dropdown menu with hamburger icon
+  - ADDED: Music button on mobile (left side), Wish Wall button in dropdown
 */
 
 function Icon({ children }: { children: React.ReactNode }) {
@@ -42,9 +45,31 @@ function SimpleCircleIcon() {
 export default function WeddingNavbar() {
   const [wishWallOpen, setWishWallOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // ADDED: Track music state for mobile button
+  const [musicOn, setMusicOn] = useState(false);
+
+  // ADDED: Sync music state with shared audio element
+  useEffect(() => {
+    const audio = document.getElementById("bg-music") as HTMLAudioElement;
+    if (musicOn && audio) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          console.log("Autoplay was prevented by browser");
+        });
+      }
+    } else if (!musicOn && audio) {
+      audio.pause();
+    }
+  }, [musicOn]);
+
+  // ADDED: Handle mobile music button click
+  const handleMobileMusic = () => {
+    setMusicOn(!musicOn);
+  };
 
   return (
-    <nav className="relative top-0 left-0 w-full backdrop-blur-md shadow-md z-50">
+    <nav className="fixed top-0 left-0 w-full backdrop-blur-md shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center gap-2 text-2xl font-bold text-pink-600">
@@ -52,7 +77,7 @@ export default function WeddingNavbar() {
           <span>WedWishher</span>
         </div>
 
-        {/* Navigation Links */}
+        {/* Desktop Navigation Links - UNCHANGED */}
         <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           <Link href="#home" className="flex items-center gap-2 hover:text-pink-600 transition">
             <Icon><SimpleCircleIcon /></Icon> Home
@@ -75,7 +100,7 @@ export default function WeddingNavbar() {
           </Link>
         </div>
 
-        {/* CTA Button - opens Wish Wall modal */}
+        {/* Desktop CTA Button - UNCHANGED */}
         <div className="hidden md:block">
           <button
             type="button"
@@ -86,18 +111,32 @@ export default function WeddingNavbar() {
           </button>
         </div>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden">
+        {/* ========== MOBILE MENU SECTION - CHANGES START HERE ========== */}
+        {/* Mobile Menu Container */}
+        <div className="md:hidden flex items-center gap-3">
+          {/* ADDED: Music Button (Mobile) - LEFT SIDE */}
+          <button
+            onClick={handleMobileMusic}
+            className="bg-yellow-600 text-white p-2 rounded-full hover:bg-yellow-700 transition shadow-lg"
+            title={musicOn ? "Pause Music" : "Play Music"}
+          >
+            {musicOn ? <Music2 size={20} /> : <Music size={20} />}
+          </button>
+
+          {/* Hamburger Icon - RIGHT SIDE */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-gray-700 hover:text-pink-600 focus:outline-none"
+            className="text-gray-700 hover:text-pink-600 focus:outline-none p-2 transition-transform duration-300"
+            style={{ transform: isMenuOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+            aria-label="Toggle menu"
           >
-            <span className="sr-only">Open menu</span>
             {isMenuOpen ? (
+              /* X Icon */
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
+              /* Hamburger Icon */
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -106,59 +145,14 @@ export default function WeddingNavbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* ========== MOBILE DROPDOWN MENU - SMOOTH ANIMATION ========== */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg z-50">
-          <div className="px-6 py-4 space-y-4">
-
+        <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+            {/* Mobile Nav Links */}
             <Link
               href="#home"
-              className="block py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-
-            <Link
-              href="#story"
-              className="block py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Our Story
-            </Link>
-
-            <Link
-              href="#gallery"
-              className="block py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Gallery
-            </Link>
-
-            <Link
-              href="#events"
-              className="block py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Events
-            </Link>
-
-            <Link
-              href="#wishes"
-              className="block py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Wishes
-            </Link>
-
-          </div>
-        </div>
-      )}   {isMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
-          <div className="px-6 py-4 space-y-4">
-            <Link
-              href="#home"
-              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Home
@@ -166,7 +160,7 @@ export default function WeddingNavbar() {
 
             <Link
               href="#story"
-              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Our Story
@@ -174,7 +168,7 @@ export default function WeddingNavbar() {
 
             <Link
               href="#gallery"
-              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Gallery
@@ -182,7 +176,7 @@ export default function WeddingNavbar() {
 
             <Link
               href="#events"
-              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Events
@@ -190,27 +184,29 @@ export default function WeddingNavbar() {
 
             <Link
               href="#wishes"
-              className="block flex items-center gap-2 text-gray-700 hover:text-pink-600 transition py-2"
+              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Wishes
             </Link>
 
-            <div className="pt-4 border-t border-gray-200">
+            {/* Mobile Wish Wall Button */}
+            <div className="pt-4 border-t border-gray-200 mt-4">
               <button
                 type="button"
                 onClick={() => {
                   setWishWallOpen(true);
                   setIsMenuOpen(false);
                 }}
-                className="w-full bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer"
+                className="w-full bg-gradient-to-r from-pink-600 to-pink-500 text-white px-4 py-3 rounded-lg hover:from-pink-700 hover:to-pink-600 transition shadow-md cursor-pointer font-medium"
               >
-                Wish wall
+                Open Wish Wall
               </button>
             </div>
           </div>
         </div>
       )}
+      {/* ========== MOBILE MENU SECTION - CHANGES END HERE ========== */}
 
       <WishWallModal isOpen={wishWallOpen} onClose={() => setWishWallOpen(false)} />
     </nav>

@@ -20,11 +20,52 @@ export default function WeddingGallery() {
   const { scrollY } = useScroll()
   const yParallax = useTransform(scrollY, [0, 500], [0, -50])
 
+  // MODIFIED: Toggle play/pause functionality with autoplay handling
   useEffect(() => {
     const audio = document.getElementById("bg-music") as HTMLAudioElement
-    if (musicOn) audio?.play()
-    else audio?.pause()
+    if (musicOn && audio) {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          console.log("Autoplay was prevented by browser")
+        })
+      }
+    } else if (!musicOn && audio) {
+      audio.pause()
+    }
   }, [musicOn])
+
+  // ADDED: Autoplay logic - attempt to play music on site load
+  useEffect(() => {
+    const audio = document.getElementById("bg-music") as HTMLAudioElement
+    if (audio) {
+      // Attempt autoplay when component mounts
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setMusicOn(true)
+          })
+          .catch(() => {
+            // Browser blocked autoplay - user must interact first
+            setMusicOn(false)
+          })
+      }
+    }
+  }, []) // Runs once on component mount
+
+  useEffect(() => {
+    // Attempt autoplay when component mounts
+    const audio = document.getElementById("bg-music") as HTMLAudioElement
+    if (audio) {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay failed - user interaction required
+        })
+      }
+    }
+  }, []) // Empty dependency array - runs once on mount
 
   return (
         <section id="gallery" className="relative min-h-screen py-20 px-6 bg-gradient-to-b from-[#4b0f1e] via-[#6d1a2f] to-[#2b0a14] text-white overflow-hidden">
@@ -74,9 +115,11 @@ export default function WeddingGallery() {
         <source src="/music/wedding.mp3" type="audio/mpeg" />
       </audio>
 
+      {/* MODIFIED: Hide music button on mobile (moved to navbar) */}
       <button
         onClick={() => setMusicOn(!musicOn)}
-        className="fixed top-4 right-4 md:right-6 z-50 bg-yellow-600 text-white p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition"
+        className="hidden md:block fixed top-4 right-4 md:right-6 z-50 bg-yellow-600 text-white p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition"
+        title={musicOn ? "Pause Music" : "Play Music"}
       >
         {musicOn ? <Music2 size={20} /> : <Music size={20} />}
       </button>

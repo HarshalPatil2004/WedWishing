@@ -6,9 +6,9 @@ const events = [
   {
     titleMarathi: "साखरपुडा",
     titleEnglish: "Sakharpuda",
-    date: "12 May 2026",
-    time: "10:30 AM",
-    venue: "Patil Hall, Pune",
+    date: "27 January 2026",
+    time: "12:30 PM",
+    venue: "Gajanan Mandir Devasthan, Galbardi, Mohpa",
     description:
       "The beautiful beginning of two families coming together with sweetness and blessings.",
     quoteMarathi: "गोड सुरुवात, आयुष्यभर साथ.",
@@ -17,8 +17,8 @@ const events = [
   {
     titleMarathi: "हळद समारंभ",
     titleEnglish: "Haldi Ceremony",
-    date: "14 May 2026",
-    time: "9:00 AM",
+    date: "1 April 2026",
+    time: "7:00 PM",
     venue: "Bride's Residence",
     description:
       "A joyful ritual filled with turmeric, laughter, and the warmth of loved ones.",
@@ -28,9 +28,9 @@ const events = [
   {
     titleMarathi: "मेहेंदी",
     titleEnglish: "Mehendi Ceremony",
-    date: "15 May 2026",
-    time: "4:00 PM",
-    venue: "Groom's Residence",
+    date: "31 March 2026",
+    time: "10:00 AM",
+    venue: "Bride's Residence",
     description:
       "Intricate henna designs symbolizing love, prosperity, and new beginnings.",
     quoteMarathi: "मेहेंदीचे रंग, प्रेमाची उमंग.",
@@ -39,9 +39,9 @@ const events = [
   {
     titleMarathi: "लग्न सोहळा",
     titleEnglish: "Wedding Ceremony",
-    date: "16 May 2026",
-    time: "12:15 PM",
-    venue: "Shree Mangal Karyalay, Pune",
+    date: "3 April 2026",
+    time: "12:30 PM",
+    venue: "Shirbhate Sabhagruha, Kalmeshwar, Nagpur",
     description:
       "Sacred rituals, Mangalashtak chanting, Antarpat tradition, and the union of two souls.",
     quoteMarathi: "दोन जीव, एक हृदय.",
@@ -50,9 +50,9 @@ const events = [
   {
     titleMarathi: "रिसेप्शन",
     titleEnglish: "Reception",
-    date: "16 May 2026",
+    date: "4 April 2026",
     time: "7:00 PM",
-    venue: "Royal Banquet Hall",
+    venue: "Rekhade Vidyalaya, Pipla (Kinkhede)",
     description:
       "An elegant evening to celebrate love, blessings, and cherished memories with family and friends.",
     quoteMarathi: "आपल्या उपस्थितीने सोहळा पूर्ण होईल.",

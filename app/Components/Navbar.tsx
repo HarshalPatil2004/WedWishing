@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Music, Music2 } from "lucide-react";
 import WishWallModal from "./WishWallModal";
 
@@ -73,7 +74,7 @@ export default function WeddingNavbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center gap-2 text-2xl font-bold text-pink-600">
-          <HeartIcon />
+          <Image src="/gallery/logo.png" alt="Logo" width={40} height={40} className="rounded-full" />
           <span>WedWishher</span>
         </div>
 

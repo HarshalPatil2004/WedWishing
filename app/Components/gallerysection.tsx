@@ -1,87 +1,85 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { X, Music, Music2, Images, Sparkles } from "lucide-react"
 
 const images = [
-  { src: "/gallery1.jpg", quote: "Two hearts. One destiny." },
-  { src: "/gallery2.jpg", quote: "Forever begins here." },
-  { src: "/story1.jpg", quote: "A love written in the stars." },
-  { src: "/story2.jpg", quote: "Together is a beautiful place to be." },
-  { src: "/story3.jpg", quote: "Where love meets elegance." },
+  { src: "/gallery/image1.jpg", quote: "A beautiful moment captured." },
+  { src: "/gallery/image2.jpg", quote: "Cherished memories forever." },
+  { src: "/gallery/image3.jpg", quote: "Love in every frame." },
+  { src: "/gallery/image4.jpg", quote: "Together we shine." },
+  { src: "/gallery/image5.jpg", quote: "Eternal happiness." },
+  { src: "/gallery/image6.jpg", quote: "A day to remember." },
+  { src: "/gallery/image7.jpg", quote: "Pure joy." },
+  { src: "/gallery/image8.jpg", quote: "Heartfelt smiles." },
+  { src: "/gallery/image9.jpg", quote: "Unforgettable times." },
+  { src: "/gallery/image10.jpg", quote: "Blissful moments." },
+  { src: "/gallery/image11.jpg", quote: "Love story continues." },
+  { src: "/gallery/image12.jpg", quote: "Forever yours." },
 ]
 
 export default function WeddingGallery() {
   const [selected, setSelected] = useState<string | null>(null)
   const [musicOn, setMusicOn] = useState(false)
+  const [galleryImages, setGalleryImages] = useState(images)
+
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const { scrollY } = useScroll()
   const yParallax = useTransform(scrollY, [0, 500], [0, -50])
 
-  // MODIFIED: Toggle play/pause functionality with autoplay handling
+  /* ✅ Shuffle only on client to prevent hydration mismatch */
   useEffect(() => {
-    const audio = document.getElementById("bg-music") as HTMLAudioElement
-    if (musicOn && audio) {
+    const shuffled = [...images].sort(() => Math.random() - 0.5)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGalleryImages(shuffled)
+  }, [])
+
+  /* ✅ Music play/pause control */
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (musicOn) {
       const playPromise = audio.play()
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          console.log("Autoplay was prevented by browser")
-        })
-      }
-    } else if (!musicOn && audio) {
+      playPromise?.catch(() => {
+        console.log("Autoplay prevented")
+      })
+    } else {
       audio.pause()
     }
   }, [musicOn])
 
-  // ADDED: Autoplay logic - attempt to play music on site load
+  /* ✅ Attempt autoplay once on mount */
   useEffect(() => {
-    const audio = document.getElementById("bg-music") as HTMLAudioElement
-    if (audio) {
-      // Attempt autoplay when component mounts
-      const playPromise = audio.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setMusicOn(true)
-          })
-          .catch(() => {
-            // Browser blocked autoplay - user must interact first
-            setMusicOn(false)
-          })
-      }
-    }
-  }, []) // Runs once on component mount
+    const audio = audioRef.current
+    if (!audio) return
 
-  useEffect(() => {
-    // Attempt autoplay when component mounts
-    const audio = document.getElementById("bg-music") as HTMLAudioElement
-    if (audio) {
-      const playPromise = audio.play()
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Autoplay failed - user interaction required
-        })
-      }
-    }
-  }, []) // Empty dependency array - runs once on mount
+    const playPromise = audio.play()
+    playPromise
+      ?.then(() => setMusicOn(true))
+      .catch(() => setMusicOn(false))
+  }, [])
 
   return (
-        <section id="gallery" className="relative min-h-screen py-20 px-6 bg-gradient-to-b from-[#4b0f1e] via-[#6d1a2f] to-[#2b0a14] text-white overflow-hidden">
-
-      {/* 🪔 Mandala Background */}
+    <section
+      id="gallery"
+      className="relative min-h-screen py-20 px-6 bg-gradient-to-b from-[#4b0f1e] via-[#6d1a2f] to-[#2b0a14] text-white overflow-hidden"
+    >
+      {/* Mandala Background */}
       <motion.div
         style={{ y: yParallax }}
         className="absolute inset-0 opacity-10 bg-[url('/mandala.svg')] bg-center bg-no-repeat bg-contain pointer-events-none"
       />
 
-      {/* ✨ Floating Golden Particles */}
+      {/* Floating Golden Particles */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="w-full h-full bg-[radial-gradient(circle_at_20%_30%,rgba(255,215,0,0.2),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(255,215,0,0.15),transparent_40%)] animate-pulse" />
       </div>
 
-      {/* 🖼️ Iconic Gallery Header */}
+      {/* Gallery Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -98,6 +96,7 @@ export default function WeddingGallery() {
         >
           <Images className="w-10 h-10 text-[#4b0f1e]" strokeWidth={2} />
         </motion.div>
+
         <div className="flex items-center justify-center gap-3 mb-4">
           <Sparkles className="w-6 h-6 text-yellow-400" />
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white drop-shadow-lg">
@@ -105,17 +104,17 @@ export default function WeddingGallery() {
           </h2>
           <Sparkles className="w-6 h-6 text-yellow-400" />
         </div>
+
         <p className="text-yellow-200/90 text-lg md:text-xl italic font-serif max-w-2xl mx-auto">
           Cherished moments from our wedding — scroll to explore
         </p>
       </motion.div>
 
-      {/* 🎵 Background Music */}
-      <audio id="bg-music" loop>
+      {/* Background Music */}
+      <audio ref={audioRef} loop>
         <source src="/music/wedding.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* MODIFIED: Hide music button on mobile (moved to navbar) */}
       <button
         onClick={() => setMusicOn(!musicOn)}
         className="hidden md:block fixed top-4 right-4 md:right-6 z-50 bg-yellow-600 text-white p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition"
@@ -124,9 +123,9 @@ export default function WeddingGallery() {
         {musicOn ? <Music2 size={20} /> : <Music size={20} />}
       </button>
 
-      {/* 🖼️ Masonry Layout */}
+      {/* Masonry Layout */}
       <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
-        {images.map((img, i) => (
+        {galleryImages.map((img, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 40 }}
@@ -145,10 +144,8 @@ export default function WeddingGallery() {
                 className="rounded-2xl object-cover w-full h-auto transform group-hover:scale-110 transition duration-700"
               />
 
-              {/* 🌟 Golden Overlay Glow */}
               <div className="absolute inset-0 bg-gradient-to-t from-yellow-400/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 rounded-2xl" />
 
-              {/* 💍 Caption Overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition">
                 <p className="text-sm italic text-yellow-300">{img.quote}</p>
               </div>
@@ -157,7 +154,7 @@ export default function WeddingGallery() {
         ))}
       </div>
 
-      {/* 💡 Lightbox Modal */}
+      {/* Lightbox */}
       <AnimatePresence>
         {selected && (
           <motion.div

@@ -2,17 +2,17 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Wish } from "@/models/Wish";
 
-export async function PATCH(
+export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
 
-  const updated = await Wish.findByIdAndUpdate(
-    params.id,
-    { $inc: { likes: 1 } },
-    { new: true }
-  );
+  const { id } = await params;
 
-  return NextResponse.json(updated);
+  await Wish.findByIdAndDelete(id);
+
+  return NextResponse.json({
+    message: "Deleted successfully",
+  });
 }

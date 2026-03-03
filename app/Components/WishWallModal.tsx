@@ -5,7 +5,7 @@ import { useState } from "react";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onWishAdded: () => void;
+  onWishAdded?: () => void;  // ← make optional
 }
 
 export default function WishingWallModal({
@@ -34,7 +34,7 @@ export default function WishingWallModal({
         body: JSON.stringify({ name, message }),
       });
 
-      onWishAdded();
+  onWishAdded?.();
       onClose();
     } catch (err) {
       console.error("Error submitting wish", err);

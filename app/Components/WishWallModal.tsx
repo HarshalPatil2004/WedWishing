@@ -3,14 +3,22 @@
 import { useState } from "react";
 
 interface Props {
+  isOpen: boolean;
   onClose: () => void;
   onWishAdded: () => void;
 }
 
-export default function WishingWallModal({ onClose, onWishAdded }: Props) {
+export default function WishingWallModal({
+  isOpen,
+  onClose,
+  onWishAdded,
+}: Props) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // 🔥 Only added this line for visibility control
+  if (!isOpen) return null;
 
   const handleSubmit = async () => {
     if (!name || !message) return;

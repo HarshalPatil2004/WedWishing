@@ -1,84 +1,68 @@
 "use client";
 
+import { addWish } from "@/app/actions/wishActions";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-interface Props {
+interface WishWallModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onWishAdded?: () => void;  // ← make optional
 }
 
-export default function WishingWallModal({
+export default function WishWallModal({
   isOpen,
   onClose,
-  onWishAdded,
-}: Props) {
+}: WishWallModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  // 🔥 Only added this line for visibility control
-  if (!isOpen) return null;
+  if (!isOpen) return null; // 👈 Important
 
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     if (!name || !message) return;
 
-    setLoading(true);
-
-    try {
-      await fetch("/api/wishes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, message }),
-      });
-
-  onWishAdded?.();
-      onClose();
-    } catch (err) {
-      console.error("Error submitting wish", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    await addWish(name, message);
+    router.refresh();
+    setName("");
+    setMessage("");
+    onClose();
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fadeIn">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
-        >
-          ✕
-        </button>
-
-        <h3 className="text-2xl font-serif text-rose-700 text-center mb-6">
-          Send Your Blessings 💖
-        </h3>
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-pink-600 mb-4">
+          Send Your Blessing 💌
+        </h2>
 
         <input
           type="text"
           placeholder="Your Name"
-          className="w-full mb-4 px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400"
+          className="w-full p-3 border rounded-lg mb-3"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <textarea
-          placeholder="Write your beautiful message..."
-          rows={4}
-          className="w-full mb-4 px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400"
+          placeholder="Your Wish"
+          className="w-full p-3 border rounded-lg mb-3"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
 
         <button
           onClick={handleSubmit}
-          disabled={loading}
-          className="w-full py-3 bg-rose-600 text-white rounded-xl hover:bg-rose-700 transition duration-300"
+          className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
         >
-          {loading ? "Sending..." : "Submit Wish"}
+          Submit Wish
+        </button>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-2 text-gray-600"
+        >
+          Cancel
         </button>
       </div>
     </div>

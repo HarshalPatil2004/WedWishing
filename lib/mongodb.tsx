@@ -1,22 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI!;
 
-let cached = (global as any).mongoose;
-
-if (!cached) {
-  cached = (global as any).mongoose = {
-    conn: null,
-    promise: null,
-  };
+if (!MONGO_URI) {
+  throw new Error("Please define the MONGO_URI environment variable");
 }
 
-export async function connectDB() {
-  if (!MONGO_URI) {
-    throw new Error("MONGO_URI missing");
-  }
+interface MongooseGlobal {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
 
+declare global {
+  var _mongoose: MongooseGlobal | undefined;
+}
+
+const cached = global._mongoose ?? {
+  conn: null,
+  promise: null,
+};
+
+if (!global._mongoose) {
+  global._mongoose = cached;
+}
+
+export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {

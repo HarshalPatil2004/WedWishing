@@ -5,7 +5,7 @@ import { Wish } from "@/models/Wish";
 export async function GET() {
   await connectDB();
 
-  const wishes = await Wish.find({ approved: true })
+  const wishes = await Wish.find()
     .sort({ createdAt: -1 });
 
   return NextResponse.json(wishes);

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Music, Music2 } from "lucide-react";
-import WishWallModal from "./WishWallModal";
 
 /*
   Fixed Version:
@@ -12,7 +11,7 @@ import WishWallModal from "./WishWallModal";
   - Added lightweight inline SVG icons instead
   - Safe for Next.js + Vite + CRA environments
   - CHANGES: Added responsive mobile dropdown menu with hamburger icon
-  - ADDED: Music button on mobile (left side), Wish Wall button in dropdown
+  - ADDED: Music button on mobile (left side), Wish Wall link in navigation
 */
 
 function Icon({ children }: { children: React.ReactNode }) {
@@ -20,18 +19,6 @@ function Icon({ children }: { children: React.ReactNode }) {
     <span className="inline-flex items-center justify-center w-5 h-5">
       {children}
     </span>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="w-6 h-6"
-    >
-      <path d="M12 21s-6.716-4.35-9.193-7.272C.533 11.2 1.2 7.8 3.6 6.2c2.1-1.4 4.8-.6 6.4 1.2 1.6-1.8 4.3-2.6 6.4-1.2 2.4 1.6 3.067 5 0 7.528C18.716 16.65 12 21 12 21z" />
-    </svg>
   );
 }
 
@@ -44,7 +31,6 @@ function SimpleCircleIcon() {
 }
 
 export default function WeddingNavbar() {
-  const [wishWallOpen, setWishWallOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // ADDED: Track music state for mobile button
   const [musicOn, setMusicOn] = useState(false);
@@ -96,20 +82,19 @@ export default function WeddingNavbar() {
             <Icon><SimpleCircleIcon /></Icon> Events
           </Link>
 
-          <Link href="#wishes" className="flex items-center gap-2 hover:text-pink-600 transition">
-            <Icon><SimpleCircleIcon /></Icon> Wishes
+          <Link href="/wishwall" className="flex items-center gap-2 hover:text-pink-600 transition font-semibold text-pink-600">
+            <Icon><SimpleCircleIcon /></Icon> Wish Wall
           </Link>
         </div>
 
         {/* Desktop CTA Button - UNCHANGED */}
         <div className="hidden md:block">
-          <button
-            type="button"
-            onClick={() => setWishWallOpen(true)}
-            className="bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer"
+          <Link
+            href="/wishwall"
+            className="bg-pink-600 text-white px-5 py-2 rounded-full hover:bg-pink-700 transition shadow-md cursor-pointer font-semibold"
           >
-            Wish wall
-          </button>
+            💌 Wish Wall
+          </Link>
         </div>
 
         {/* ========== MOBILE MENU SECTION - CHANGES START HERE ========== */}
@@ -153,7 +138,7 @@ export default function WeddingNavbar() {
             {/* Mobile Nav Links */}
             <Link
               href="#home"
-              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
+              className="px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Home
@@ -161,7 +146,7 @@ export default function WeddingNavbar() {
 
             <Link
               href="#story"
-              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
+              className="px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Our Story
@@ -169,7 +154,7 @@ export default function WeddingNavbar() {
 
             <Link
               href="#gallery"
-              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
+              className="px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Gallery
@@ -177,39 +162,25 @@ export default function WeddingNavbar() {
 
             <Link
               href="#events"
-              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               <Icon><SimpleCircleIcon /></Icon> Events
             </Link>
 
             <Link
-              href="#wishes"
-              className="block px-4 py-3 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition duration-300 font-medium flex items-center gap-3"
+              href="/wishwall"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-pink-600 hover:text-pink-700 bg-pink-50 transition duration-300 font-bold"
               onClick={() => setIsMenuOpen(false)}
             >
-              <Icon><SimpleCircleIcon /></Icon> Wishes
+              <span>💌</span> Wish Wall
             </Link>
 
-            {/* Mobile Wish Wall Button */}
-            <div className="pt-4 border-t border-gray-200 mt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setWishWallOpen(true);
-                  setIsMenuOpen(false);
-                }}
-                className="w-full bg-gradient-to-r from-pink-600 to-pink-500 text-white px-4 py-3 rounded-lg hover:from-pink-700 hover:to-pink-600 transition shadow-md cursor-pointer font-medium"
-              >
-                Open Wish Wall
-              </button>
-            </div>
           </div>
         </div>
       )}
       {/* ========== MOBILE MENU SECTION - CHANGES END HERE ========== */}
 
-      <WishWallModal isOpen={wishWallOpen} onClose={() => setWishWallOpen(false)} />
     </nav>
   );
 }

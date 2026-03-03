@@ -2,15 +2,23 @@
 
 import { useState } from "react";
 
+interface WishWallModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 export default function WishWallModal({
-  close,
-}: {
-  close: () => void;
-}) {
+  isOpen,
+  onClose,
+}: WishWallModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
+  if (!isOpen) return null;
+
   const handleSubmit = async () => {
+    if (!name || !message) return;
+
     await fetch("/api/wishes", {
       method: "POST",
       headers: {
@@ -19,11 +27,13 @@ export default function WishWallModal({
       body: JSON.stringify({ name, message }),
     });
 
-    close();
+    setName("");
+    setMessage("");
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-xl w-96">
         <h2 className="text-xl font-bold mb-4">Send Your Wish 💖</h2>
 
@@ -42,12 +52,21 @@ export default function WishWallModal({
           onChange={(e) => setMessage(e.target.value)}
         />
 
-        <button
-          onClick={handleSubmit}
-          className="bg-pink-500 text-white px-4 py-2 rounded"
-        >
-          Submit
-        </button>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border rounded"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={handleSubmit}
+            className="bg-pink-500 text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,104 +1,75 @@
-"use client"
+/* eslint-disable react-hooks/set-state-in-effect */
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useWishesContext } from "@/app/context/WishesContext"
+import { useEffect, useState } from "react";
+import WishingWallModal from "./WishWallModal";
 
-export default function MessageWall() {
-  const [name, setName] = useState("")
-  const [message, setMessage] = useState("")
-  const { addWish } = useWishesContext()
+interface Wish {
+  _id?: string;
+  name: string;
+  message: string;
+  createdAt?: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+export default function WishingWall() {
+  const [wishes, setWishes] = useState<Wish[]>([]);
+  const [open, setOpen] = useState(false);
 
-    if (!name.trim() || !message.trim()) return
+  const fetchWishes = async () => {
+    try {
+      const res = await fetch("/api/wishes");
+      const data = await res.json();
+      setWishes(data);
+    } catch (err) {
+      console.error("Failed to fetch wishes", err);
+    }
+  };
 
-    addWish(name, message)
-
-    setName("")
-    setMessage("")
-  }
+  useEffect(() => {
+    fetchWishes();
+  }, []);
 
   return (
-    <section id="wishes" className="relative py-24 px-6 bg-gradient-to-b from-[#2b0a14] via-[#4b0f1e] to-[#3b0a18] text-white overflow-hidden">
-
-      {/* 🪔 Mandala Background */}
-      <div className="absolute inset-0 opacity-5 bg-[url('/mandala.svg')] bg-center bg-no-repeat bg-contain pointer-events-none" />
-
-      {/* Section Heading */}
-      <motion.div
-        initial={{ opacity: 0, y: -40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="text-center mb-16"
-      >
-        <h2 className="text-4xl md:text-5xl text-yellow-400 font-serif mb-4">
-          शुभेच्छा संदेश
+    <section className="relative w-full py-20 px-6 bg-gradient-to-b from-rose-50 to-white overflow-hidden">
+      <div className="max-w-6xl mx-auto text-center">
+        <h2 className="text-4xl font-serif text-rose-700 mb-4">
+          Wedding Wishing Wall 💍
         </h2>
-        <p className="text-gray-300 italic">
-          Leave Your Blessings for the Beautiful Couple
+        <p className="text-gray-600 mb-8">
+          Leave your blessings and make their special day even brighter ✨
         </p>
-        <div className="w-24 h-1 bg-yellow-500 mx-auto mt-6 rounded-full" />
-      </motion.div>
 
-      {/* Form */}
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-        className="max-w-2xl mx-auto bg-[#4b0f1e]/60 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-yellow-500/20 space-y-6"
-      >
-        {/* Name Input */}
-        <div>
-          <label className="block text-sm text-yellow-300 mb-2">
-            Your Name
-          </label>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2b0a14] border border-yellow-500/30 focus:outline-none focus:border-yellow-400 text-white"
-          />
-        </div>
-
-        {/* Message Input */}
-        <div>
-          <label className="block text-sm text-yellow-300 mb-2">
-            Your Wishes
-          </label>
-          <textarea
-            placeholder="Write your heartfelt wishes..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            rows={4}
-            className="w-full p-3 rounded-lg bg-[#2b0a14] border border-yellow-500/30 focus:outline-none focus:border-yellow-400 text-white resize-none"
-          />
-        </div>
-
-        {/* Submit Button */}
         <button
-          type="submit"
-          className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 transition rounded-lg font-semibold shadow-lg hover:scale-105 duration-300"
+          onClick={() => setOpen(true)}
+          className="px-6 py-3 bg-rose-600 text-white rounded-full shadow-lg hover:bg-rose-700 transition duration-300"
         >
-          Send Blessings 💛
+          Leave a Wish
         </button>
-      </motion.form>
 
-      {/* Footer Blessing Line */}
-      <div className="text-center mt-20">
-        <p className="text-yellow-400 italic text-lg">
-          "आपल्या आशीर्वादाने हा सोहळा अधिक मंगल होईल."
-        </p>
-        <p className="text-gray-400 mt-2">
-          Your blessings make this sacred celebration complete.
-        </p>
+        {/* Wishes Grid */}
+        <div className="grid md:grid-cols-3 gap-8 mt-12">
+          {wishes.map((wish) => (
+            <div
+              key={wish._id}
+              className="bg-white rounded-2xl shadow-md p-6 border border-rose-100 hover:shadow-xl transition duration-300"
+            >
+              <h3 className="text-lg font-semibold text-rose-700 mb-2">
+                {wish.name}
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {wish.message}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
+      {open && (
+        <WishingWallModal
+          onClose={() => setOpen(false)}
+          onWishAdded={fetchWishes}
+        />
+      )}
     </section>
-  )
+  );
 }

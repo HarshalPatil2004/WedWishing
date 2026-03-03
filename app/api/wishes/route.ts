@@ -4,14 +4,17 @@ import { Wish } from "@/models/Wish";
 
 export async function GET() {
   await connectDB();
-  const wishes = await Wish.find().sort({ createdAt: -1 });
+
+  const wishes = await Wish.find({ approved: true })
+    .sort({ createdAt: -1 });
+
   return NextResponse.json(wishes);
 }
 
-// POST new wish
 export async function POST(req: Request) {
   try {
     await connectDB();
+
     const body = await req.json();
 
     if (!body.name || !body.message) {
@@ -26,10 +29,12 @@ export async function POST(req: Request) {
       message: body.message,
     });
 
-    return NextResponse.json(newWish, { status: 201 });
+    return NextResponse.json(newWish, {
+      status: 201,
+    });
   } catch (error) {
     return NextResponse.json(
-      { error: "Server error" },
+      { error: "Server Error" },
       { status: 500 }
     );
   }

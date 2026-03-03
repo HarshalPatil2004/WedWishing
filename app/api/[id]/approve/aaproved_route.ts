@@ -8,11 +8,11 @@ export async function PATCH(
 ) {
   await connectDB();
 
-  const updatedWish = await Wish.findByIdAndUpdate(
+  const updated = await Wish.findByIdAndUpdate(
     params.id,
     { approved: true },
     { new: true }
   );
 
-  return NextResponse.json(updatedWish);
+  return NextResponse.json(updated);
 }

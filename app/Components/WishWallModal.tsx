@@ -13,41 +13,60 @@ export default function WishWallModal({
 }: WishWallModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
-    if (!name || !message) return;
+    if (!name.trim() || !message.trim()) return;
 
-    await fetch("/api/wishes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, message }),
-    });
+    try {
+      setLoading(true);
 
-    setName("");
-    setMessage("");
-    onClose();
+      const res = await fetch("/api/wishes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          message,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit wish");
+      }
+
+      setName("");
+      setMessage("");
+      onClose();
+    } catch (error) {
+      console.error("Error submitting wish:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-xl w-96">
-        <h2 className="text-xl font-bold mb-4">Send Your Wish 💖</h2>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          Send Your Wish 💖
+        </h2>
 
         <input
           type="text"
           placeholder="Your Name"
-          className="border p-2 w-full mb-4 rounded"
+          className="w-full border rounded-lg p-2 mb-4"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <textarea
           placeholder="Write your wish..."
-          className="border p-2 w-full mb-4 rounded"
+          className="w-full border rounded-lg p-2 mb-4"
+          rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
@@ -55,16 +74,17 @@ export default function WishWallModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded"
+            className="px-4 py-2 border rounded-lg"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSubmit}
-            className="bg-pink-500 text-white px-4 py-2 rounded"
+            disabled={loading}
+            className="px-4 py-2 bg-pink-500 text-white rounded-lg disabled:opacity-50"
           >
-            Submit
+            {loading ? "Sending..." : "Submit"}
           </button>
         </div>
       </div>

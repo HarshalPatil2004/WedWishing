@@ -1,93 +1,79 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { createPortal } from "react-dom"
+import { motion, AnimatePresence } from "framer-motion"
+import { X } from "lucide-react"
+import { useWishesContext } from "@/app/context/WishesContext"
 
 interface WishWallModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
-export default function WishWallModal({
-  isOpen,
-  onClose,
-}: WishWallModalProps) {
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function WishWallModal({ isOpen, onClose }: WishWallModalProps) {
+  const { wishes } = useWishesContext()
 
-  if (!isOpen) return null;
+  if (typeof document === "undefined") return null
 
-  const handleSubmit = async () => {
-    if (!name.trim() || !message.trim()) return;
-
-    try {
-      setLoading(true);
-
-      const res = await fetch("/api/wishes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          message,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to submit wish");
-      }
-
-      setName("");
-      setMessage("");
-      onClose();
-    } catch (error) {
-      console.error("Error submitting wish:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Send Your Wish 💖
-        </h2>
-
-        <input
-          type="text"
-          placeholder="Your Name"
-          className="w-full border rounded-lg p-2 mb-4"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <textarea
-          placeholder="Write your wish..."
-          className="w-full border rounded-lg p-2 mb-4"
-          rows={4}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border rounded-lg"
+  const modalContent = (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 overflow-y-auto isolate"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="relative w-full max-w-6xl max-h-[calc(100vh-2rem)] my-auto overflow-hidden rounded-2xl bg-gradient-to-b from-[#4b0f1e] to-[#2b0a14] border border-yellow-500/30 shadow-2xl flex flex-col"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            Cancel
-          </button>
+            {/* Header */}
+            <div className="flex-shrink-0 flex items-center justify-between p-6 bg-[#4b0f1e]/95 backdrop-blur-sm border-b border-yellow-500/20">
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-yellow-400">
+                शुभेच्छा संदेश
+              </h2>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-yellow-500/20 text-white transition"
+                aria-label="Close"
+              >
+                <X size={24} />
+              </button>
+            </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="px-4 py-2 bg-pink-500 text-white rounded-lg disabled:opacity-50"
-          >
-            {loading ? "Sending..." : "Submit"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+            {/* Wishes list - full width, centered content */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col items-center">
+              {wishes.length === 0 ? (
+                <p className="text-center text-gray-400 italic py-12 w-full">
+                  No blessings yet. Be the first to send your wishes!
+                </p>
+              ) : (
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {wishes.map((wish) => (
+                    <motion.div
+                      key={wish.createdAt}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-[#2b0a14]/80 p-5 rounded-xl border border-yellow-500/20 min-h-[100px]"
+                    >
+                      <p className="text-yellow-400 font-semibold">{wish.name}</p>
+                      <p className="text-gray-300 mt-2 italic text-sm line-clamp-3">"{wish.message}"</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+
+  return createPortal(modalContent, document.body)
 }

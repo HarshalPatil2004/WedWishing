@@ -14,8 +14,6 @@ export default function WishWallPage() {
   const [wishes, setWishes] = useState<SerializedWish[] | null>(null);
   const [loading, setLoading] = useState(true);
   const intervalRef = useRef<number | null>(null);
-  const [clearing, setClearing] = useState(false);
-
   async function fetchWishes() {
     try {
       const res = await fetch("/api/wishes", { cache: "no-store" });
@@ -67,32 +65,6 @@ export default function WishWallPage() {
           <Link href="/" className="inline-block px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
             ← Back to Home
           </Link>
-          {wishes && wishes.length > 0 && (
-            <button
-              onClick={async () => {
-                if (!confirm("Are you sure you want to delete ALL wishes? This cannot be undone.")) return;
-                try {
-                  setClearing(true);
-                  const res = await fetch("/api/wishes", { method: "DELETE" });
-                  const data = await res.json();
-                  if (res.ok && data.success) {
-                    setWishes([]);
-                  } else {
-                    alert("Failed to clear wishes");
-                  }
-                } catch (err) {
-                  console.error(err);
-                  alert("Failed to clear wishes");
-                } finally {
-                  setClearing(false);
-                }
-              }}
-              disabled={clearing}
-              className="inline-block px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition disabled:opacity-50"
-            >
-              {clearing ? "Clearing..." : "Clear All Wishes"}
-            </button>
-          )}
         </div>
 
         {/* Wishes Count */}

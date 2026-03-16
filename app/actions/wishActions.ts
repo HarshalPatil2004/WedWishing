@@ -38,38 +38,49 @@ function validateWish(name: string, message: string): { valid: boolean; error?: 
   return { valid: true };
 }
 
-// Sanitize message and disallow obvious code/import injection
+
+// Sanitize message using a more robust approach
 function sanitizeMessage(message: string): { ok: boolean; sanitized?: string; error?: string } {
   const trimmed = message.trim();
-  const lowered = trimmed.toLowerCase();
+  
+  // Basic XSS protection by escaping HTML
+  const escaped = trimmed
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
-  const blacklist = ["import ", "require(", "<script", "</script", "onerror=", "onclick=", "src=", "fetch("];
-  for (const p of blacklist) {
-    if (lowered.includes(p)) {
-      return { ok: false, error: "Message contains disallowed content" };
+  // Prevent common injection patterns
+  const lowered = escaped.toLowerCase();
+  const injectionPatterns = ["javascript:", "data:", "vbscript:", "<script", "onload=", "onerror=", "onclick="];
+  for (const pattern of injectionPatterns) {
+    if (lowered.includes(pattern)) {
+      return { ok: false, error: "Invalid content detected" };
     }
   }
-
-  // Escape HTML entities to prevent markup injection
-  const escaped = trimmed
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 
   return { ok: true, sanitized: escaped };
 }
 
 export async function addWish(name: string, message: string): Promise<{ success: boolean; error?: string; wish?: SerializedWish }> {
   try {
+    // Basic rate limiting (cookie-based for simplicity)
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const lastWishTime = cookieStore.get("last_wish_time")?.value;
+    
+    if (lastWishTime && Date.now() - parseInt(lastWishTime) < 30000) { // 30 second cooldown
+      return { success: false, error: "Please wait a moment before sending another wish." };
+    }
+
     // Validate input
     const validation = validateWish(name, message);
     if (!validation.valid) {
       return { success: false, error: validation.error };
     }
 
-    // Sanitize message and reject disallowed content
+    // Sanitize message
     const sanitizedResult = sanitizeMessage(message);
     if (!sanitizedResult.ok) {
       return { success: false, error: sanitizedResult.error };
@@ -82,6 +93,13 @@ export async function addWish(name: string, message: string): Promise<{ success:
     const wish = await Wish.create({
       name: name.trim(),
       message: finalMessage,
+    });
+
+    // Set rate limit cookie
+    cookieStore.set("last_wish_time", Date.now().toString(), { 
+      maxAge: 30, // 30 seconds
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production"
     });
 
     return {

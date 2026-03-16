@@ -15,17 +15,6 @@ const events = [
     quoteEnglish: "A sweet beginning for a lifetime together."
   },
   {
-    titleMarathi: "हळद समारंभ",
-    titleEnglish: "Haldi Ceremony",
-    date: "1 April 2026",
-    time: "7:00 PM",
-    venue: "Bride's Residence",
-    description:
-      "A joyful ritual filled with turmeric, laughter, and the warmth of loved ones.",
-    quoteMarathi: "हळदीचा रंग, आयुष्यभर आनंद.",
-    quoteEnglish: "May this sacred glow bring lifelong happiness."
-  },
-  {
     titleMarathi: "मेहेंदी",
     titleEnglish: "Mehendi Ceremony",
     date: "31 March 2026",
@@ -35,6 +24,17 @@ const events = [
       "Intricate henna designs symbolizing love, prosperity, and new beginnings.",
     quoteMarathi: "मेहेंदीचे रंग, प्रेमाची उमंग.",
     quoteEnglish: "The colors of henna reflect the joy of love."
+  },
+  {
+    titleMarathi: "हळद समारंभ",
+    titleEnglish: "Haldi Ceremony",
+    date: "1 April 2026",
+    time: "7:00 PM",
+    venue: "Bride's Residence",
+    description:
+      "A joyful ritual filled with turmeric, laughter, and the warmth of loved ones.",
+    quoteMarathi: "हळदीचा रंग, आयुष्यभर आनंद.",
+    quoteEnglish: "May this sacred glow bring lifelong happiness."
   },
   {
     titleMarathi: "लग्न सोहळा",
